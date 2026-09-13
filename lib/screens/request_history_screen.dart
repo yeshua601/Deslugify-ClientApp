@@ -5,49 +5,58 @@ class RequestHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF0F1410) : const Color(0xFFF8FAF3);
+    final card = isDark ? const Color(0xFF1A211C) : Colors.white;
+    final text = isDark ? const Color(0xFFE8EBE6) : const Color(0xFF003D1A);
+    final muted = isDark ? const Color(0xFF9AA39A) : const Color(0xFF707970);
+    final border = isDark ? const Color(0xFF2A332C) : const Color(0xFFE8EBE6);
+    final accent = isDark ? const Color(0xFF94F4AD) : const Color(0xFF006D38);
+    final chipBg = isDark ? const Color(0xFF2A332C) : const Color(0xFFECEFE8);
+    final chipInactive = isDark ? const Color(0xFF2A332C) : const Color(0xFFE6E9E2);
+    final infoBox = isDark ? const Color(0xFF243028) : const Color(0xFFF2F5EE);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF3),
-      appBar: _buildAppBar(context),
+      backgroundColor: bg,
+      appBar: _buildAppBar(context, isDark, accent, text),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Overview Stats
-            _buildStatsOverview(),
+            _buildStatsOverview(card, border, text, muted),
             const SizedBox(height: 28),
-
-            // Filters
-            _buildFilters(),
+            _buildFilters(chipBg, chipInactive, text),
             const SizedBox(height: 24),
-
-            // Timeline History
-            const Text(
+            Text(
               "Request History",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF003D1A),
+                color: text,
               ),
             ),
             const SizedBox(height: 16),
-
             _buildTimelineItem(
               icon: Icons.cleaning_services,
-              iconColor: const Color(0xFF006D38),
+              iconColor: accent,
               title: "Eco-Industrial Desludging",
               id: "#DSL-99201",
               date: "Oct 24, 2023",
               status: "COMPLETED",
-              statusColor: const Color(0xFF006D38),
+              statusColor: accent,
               technician: "Marcus Thorne",
               technicianRole: "Lead Technician • 4.9★",
               duration: "2h 45m",
               volume: "450 Liters",
               rating: 5,
+              card: card,
+              border: border,
+              text: text,
+              muted: muted,
+              infoBox: infoBox,
             ),
             const SizedBox(height: 20),
-
             _buildTimelineItem(
               icon: Icons.block,
               iconColor: const Color(0xFFBA1A1A),
@@ -58,43 +67,61 @@ class RequestHistoryScreen extends StatelessWidget {
               statusColor: const Color(0xFFBA1A1A),
               technician: null,
               isCancelled: true,
+              card: card,
+              border: border,
+              text: text,
+              muted: muted,
+              infoBox: infoBox,
             ),
             const SizedBox(height: 20),
-
             _buildTimelineItem(
               icon: Icons.history,
-              iconColor: const Color(0xFF707970),
+              iconColor: muted,
               title: "Routine Tank Drainage",
               id: "#DSL-97554",
               date: "Sep 28, 2023",
               status: "COMPLETED",
-              statusColor: const Color(0xFF006D38),
+              statusColor: accent,
               technician: "Sarah Jenkins",
               technicianRole: "Senior Field Expert • 5.0★",
               duration: "1h 15m",
               rating: 4,
+              card: card,
+              border: border,
+              text: text,
+              muted: muted,
+              infoBox: infoBox,
             ),
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNav(),
+      bottomNavigationBar: _buildBottomNav(context, isDark, card),
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(
+    BuildContext context,
+    bool isDark,
+    Color accent,
+    Color text,
+  ) {
     return AppBar(
-      backgroundColor: Colors.white.withValues(alpha: 0.95),
+      backgroundColor: isDark ? const Color(0xFF1A211C) : Colors.white,
       elevation: 0,
       surfaceTintColor: Colors.transparent,
-      title: const Row(
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back, color: isDark ? accent : const Color(0xFF003D1A)),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: Row(
         children: [
-          Icon(Icons.eco, color: Color(0xFF003D1A), size: 26),
-          SizedBox(width: 8),
+          Icon(Icons.eco, color: isDark ? accent : const Color(0xFF003D1A), size: 26),
+          const SizedBox(width: 8),
           Text(
             "Request History",
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF003D1A),
+              color: isDark ? accent : const Color(0xFF003D1A),
               fontSize: 18,
             ),
           ),
@@ -102,11 +129,11 @@ class RequestHistoryScreen extends StatelessWidget {
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.search, color: Color(0xFF003D1A)),
+          icon: Icon(Icons.search, color: isDark ? accent : const Color(0xFF003D1A)),
           onPressed: () {},
         ),
         IconButton(
-          icon: const Icon(Icons.tune, color: Color(0xFF003D1A)),
+          icon: Icon(Icons.tune, color: isDark ? accent : const Color(0xFF003D1A)),
           onPressed: () {},
         ),
         const Padding(
@@ -122,7 +149,12 @@ class RequestHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsOverview() {
+  Widget _buildStatsOverview(
+    Color card,
+    Color border,
+    Color text,
+    Color muted,
+  ) {
     return Row(
       children: [
         Expanded(
@@ -131,6 +163,10 @@ class RequestHistoryScreen extends StatelessWidget {
             "24",
             Icons.check_circle,
             const Color(0xFF006D38),
+            card,
+            border,
+            text,
+            muted,
           ),
         ),
         const SizedBox(width: 10),
@@ -140,6 +176,10 @@ class RequestHistoryScreen extends StatelessWidget {
             "2",
             Icons.cancel,
             const Color(0xFFBA1A1A),
+            card,
+            border,
+            text,
+            muted,
           ),
         ),
         const SizedBox(width: 10),
@@ -148,23 +188,32 @@ class RequestHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _statCard(String label, String value, IconData icon, Color color) {
+  Widget _statCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+    Color card,
+    Color border,
+    Color text,
+    Color muted,
+  ) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: card,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE8EBE6)),
+        border: Border.all(color: border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF707970),
+              color: muted,
             ),
           ),
           const SizedBox(height: 10),
@@ -173,10 +222,10 @@ class RequestHistoryScreen extends StatelessWidget {
             children: [
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF003D1A),
+                  color: text,
                 ),
               ),
               Icon(icon, color: color, size: 26),
@@ -194,15 +243,15 @@ class RequestHistoryScreen extends StatelessWidget {
         color: const Color(0xFF12562B),
         borderRadius: BorderRadius.circular(18),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "IMPACT",
             style: TextStyle(fontSize: 11, color: Colors.white70),
           ),
-          const SizedBox(height: 8),
-          const Text(
+          SizedBox(height: 8),
+          Text(
             "120 kg",
             style: TextStyle(
               fontSize: 20,
@@ -210,7 +259,7 @@ class RequestHistoryScreen extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          const Text(
+          Text(
             "CO₂ offset",
             style: TextStyle(fontSize: 11, color: Colors.white70),
           ),
@@ -219,7 +268,7 @@ class RequestHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFilters() {
+  Widget _buildFilters(Color chipBg, Color chipInactive, Color text) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -227,34 +276,43 @@ class RequestHistoryScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: const Color(0xFFECEFE8),
+              color: chipBg,
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Row(
+            child: Row(
               children: [
                 Text(
                   "All Requests",
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    color: text,
+                  ),
                 ),
-                SizedBox(width: 6),
-                Icon(Icons.expand_more, size: 18),
+                const SizedBox(width: 6),
+                Icon(Icons.expand_more, size: 18, color: text),
               ],
             ),
           ),
           const SizedBox(width: 10),
-          _filterChip("This Year", true),
+          _filterChip("This Year", true, chipInactive, text),
           const SizedBox(width: 8),
-          _filterChip("Sort by Date", false),
+          _filterChip("Sort by Date", false, chipInactive, text),
         ],
       ),
     );
   }
 
-  Widget _filterChip(String label, bool active) {
+  Widget _filterChip(
+    String label,
+    bool active,
+    Color chipInactive,
+    Color text,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: active ? const Color(0xFF94F4AD) : const Color(0xFFE6E9E2),
+        color: active ? const Color(0xFF94F4AD) : chipInactive,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -262,7 +320,7 @@ class RequestHistoryScreen extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 13,
-          color: active ? const Color(0xFF003D1A) : const Color(0xFF191D19),
+          color: active ? const Color(0xFF003D1A) : text,
         ),
       ),
     );
@@ -282,11 +340,15 @@ class RequestHistoryScreen extends StatelessWidget {
     String? volume,
     int? rating,
     bool isCancelled = false,
+    required Color card,
+    required Color border,
+    required Color text,
+    required Color muted,
+    required Color infoBox,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Timeline indicator
         Column(
           children: [
             CircleAvatar(
@@ -299,19 +361,17 @@ class RequestHistoryScreen extends StatelessWidget {
                 width: 2,
                 height: 120,
                 margin: const EdgeInsets.symmetric(vertical: 6),
-                color: const Color(0xFFC0C9BE),
+                color: border,
               ),
           ],
         ),
         const SizedBox(width: 14),
-
-        // Card
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: card,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0xFFE8EBE6)),
+              border: Border.all(color: border),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.03),
@@ -324,7 +384,6 @@ class RequestHistoryScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title + Status
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -334,19 +393,16 @@ class RequestHistoryScreen extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF003D1A),
+                              color: text,
                             ),
                           ),
                           const SizedBox(height: 2),
                           Text(
                             "$id • $date",
-                            style: const TextStyle(
-                              color: Color(0xFF707970),
-                              fontSize: 12,
-                            ),
+                            style: TextStyle(color: muted, fontSize: 12),
                           ),
                         ],
                       ),
@@ -371,16 +427,14 @@ class RequestHistoryScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-
-                // Technician
                 if (technician != null) ...[
                   const SizedBox(height: 14),
                   Row(
                     children: [
                       CircleAvatar(
                         radius: 16,
-                        backgroundColor: Colors.grey.shade200,
-                        child: const Icon(Icons.person, size: 18),
+                        backgroundColor: muted.withValues(alpha: 0.2),
+                        child: Icon(Icons.person, size: 18, color: muted),
                       ),
                       const SizedBox(width: 10),
                       Column(
@@ -388,40 +442,38 @@ class RequestHistoryScreen extends StatelessWidget {
                         children: [
                           Text(
                             technician,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
+                              color: text,
                             ),
                           ),
                           Text(
                             technicianRole ?? "",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF707970),
-                            ),
+                            style: TextStyle(fontSize: 12, color: muted),
                           ),
                         ],
                       ),
                     ],
                   ),
                 ],
-
-                // Duration / Volume
                 if (duration != null || volume != null) ...[
                   const SizedBox(height: 14),
                   Row(
                     children: [
                       if (duration != null)
-                        Expanded(child: _infoBox("Duration", duration)),
+                        Expanded(
+                          child: _infoBox("Duration", duration, infoBox, text, muted),
+                        ),
                       if (volume != null) ...[
                         const SizedBox(width: 10),
-                        Expanded(child: _infoBox("Volume", volume)),
+                        Expanded(
+                          child: _infoBox("Volume", volume, infoBox, text, muted),
+                        ),
                       ],
                     ],
                   ),
                 ],
-
-                // Rating
                 if (rating != null) ...[
                   const SizedBox(height: 10),
                   Row(
@@ -435,8 +487,6 @@ class RequestHistoryScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-
-                // Buttons
                 const SizedBox(height: 16),
                 Row(
                   children: [
@@ -463,16 +513,19 @@ class RequestHistoryScreen extends StatelessWidget {
                       child: OutlinedButton(
                         onPressed: () {},
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF003D1A),
-                          side: const BorderSide(color: Color(0xFFC0C9BE)),
+                          foregroundColor: text,
+                          side: BorderSide(color: border),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           "Download",
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: text,
+                          ),
                         ),
                       ),
                     ),
@@ -486,28 +539,31 @@ class RequestHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _infoBox(String label, String value) {
+  Widget _infoBox(
+    String label,
+    String value,
+    Color infoBox,
+    Color text,
+    Color muted,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF2F5EE),
+        color: infoBox,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 11, color: Color(0xFF707970)),
-          ),
+          Text(label, style: TextStyle(fontSize: 11, color: muted)),
           const SizedBox(height: 2),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 14,
-              color: Color(0xFF003D1A),
+              color: text,
             ),
           ),
         ],
@@ -515,12 +571,12 @@ class RequestHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomNav() {
+  Widget _buildBottomNav(BuildContext context, bool isDark, Color card) {
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.95),
+        color: isDark ? card : Colors.white.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -529,14 +585,47 @@ class RequestHistoryScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _NavItem(icon: Icons.home_outlined, label: "Home"),
-          _NavItem(icon: Icons.add_circle_outline, label: "Request"),
-          _NavItem(icon: Icons.assignment, label: "Tasks", active: true),
-          _NavItem(icon: Icons.notifications_outlined, label: "Alerts"),
-          _NavItem(icon: Icons.person_outline, label: "Profile"),
+          _NavItem(
+            icon: Icons.home_outlined,
+            label: "Home",
+            onTap: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/home',
+                (route) => false,
+              );
+            },
+          ),
+          _NavItem(
+            icon: Icons.add_circle_outline,
+            label: "Request",
+            onTap: () {
+              Navigator.pushNamed(context, '/schedule-service');
+            },
+          ),
+          // Tasks active — History is under Tasks
+          const _NavItem(
+            icon: Icons.assignment,
+            label: "Tasks",
+            active: true,
+          ),
+          _NavItem(
+            icon: Icons.notifications_outlined,
+            label: "Alerts",
+            onTap: () {
+              Navigator.pushNamed(context, '/messages');
+            },
+          ),
+          _NavItem(
+            icon: Icons.person_outline,
+            label: "Profile",
+            onTap: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
         ],
       ),
     );
@@ -547,31 +636,40 @@ class _NavItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool active;
+  final VoidCallback? onTap;
 
   const _NavItem({
     required this.icon,
     required this.label,
     this.active = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? const Color(0xFF006D38) : const Color(0xFF707970);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final color = active
+        ? (isDark ? const Color(0xFF94F4AD) : const Color(0xFF006D38))
+        : (isDark ? const Color(0xFF9AA39A) : const Color(0xFF707970));
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: color, size: 24),
-        const SizedBox(height: 3),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: color,
-            fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 3),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: color,
+              fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

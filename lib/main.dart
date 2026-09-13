@@ -25,6 +25,7 @@ import 'screens/call_screen.dart';
 import 'screens/notification_preferences_screen.dart';
 import 'screens/security_screen.dart';
 import 'screens/theme_controller.dart';
+import 'screens/privacy_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -129,6 +130,7 @@ class DeslugifyApp extends StatelessWidget {
             '/notification-preferences': (context) =>
                 const NotificationPreferencesScreen(),
             '/security': (context) => const SecurityScreen(),
+            '/privacy': (context) => const PrivacyScreen(),
           },
         );
       },

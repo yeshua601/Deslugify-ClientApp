@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Internet (required for map tiles) -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <!-- Gallery / photos -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <!-- Older Android versions -->
@@ -7,6 +10,9 @@
         android:maxSdkVersion="32"/>
     <!-- Camera -->
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Location -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:label="clientapp"
